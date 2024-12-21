@@ -4,6 +4,8 @@ import {useNavigate} from "react-router-dom";
 import {TodoItem} from "../interfaces/TodoItem.ts";
 import {TodoItemPayload} from "../interfaces/TodoItemPayload.ts";
 
+
+
 function Main({ socket }) {
     const [todo, setTodo] = useState("");
     const [todoList, setTodoList] = useState<TodoItem[]>([]); // Type `todoList` as an array of `TodoItem`
@@ -11,6 +13,11 @@ function Main({ socket }) {
 
     // Generates a random string as the todo ID
     // const generateID = () => Math.random().toString(36).substring(2, 10);
+
+    const handleDelete = (todoId: string) => {
+        console.log(`Todo item with id ${todoId} will be deleted.`);
+        socket.emit("deleteTodo", { id: todoId }); // Emit the delete event to the backend
+    };
 
     const handleAddTodo = (e) => {
         e.preventDefault();
@@ -94,7 +101,9 @@ function Main({ socket }) {
                             User Id: {item.userId ? item.userId : "Unknown"}
                         </small>
                         <div>
-                            <button className="deleteBtn">DELETE</button>
+                            <button className="deleteBtn" onClick={() => handleDelete(item.id)}>DELETE</button>
+
+
                         </div>
                     </div>
                 ))}
