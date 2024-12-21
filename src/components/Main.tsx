@@ -1,36 +1,70 @@
-import { useEffect, useState } from "react";
+import {FormEvent, useEffect, useState} from "react";
 import Nav from "./Nav";
 import {useNavigate} from "react-router-dom";
 import {TodoItem} from "../interfaces/TodoItem.ts";
-import {TodoItemPayload} from "../interfaces/TodoItemPayload.ts";
-
+// import {TodoItemPayload} from "../interfaces/TodoItemPayload.ts";
+import {Builder, parseStringPromise} from "xml2js";
 
 
 function Main({ socket }) {
-    const [todo, setTodo] = useState("");
+    const [todoInput, setTodoInput] = useState("");
     const [todoList, setTodoList] = useState<TodoItem[]>([]); // Type `todoList` as an array of `TodoItem`
     const navigate = useNavigate();
 
     // Generates a random string as the todo ID
     // const generateID = () => Math.random().toString(36).substring(2, 10);
 
+    // const handleDelete = (todoId: string) => {
+    //     console.log(`Todo item with id ${todoId} will be deleted.`);
+    //     socket.emit("deleteTodo", { id: todoId }); // Emit the delete event to the backend
+    // };
+
     const handleDelete = (todoId: string) => {
         console.log(`Todo item with id ${todoId} will be deleted.`);
-        socket.emit("deleteTodo", { id: todoId }); // Emit the delete event to the backend
+
+        // Construct the XML payload
+        const builder = new Builder();
+        const xmlPayload = builder.buildObject({
+            todo: {
+                id: todoId, // Include the ID of the todo to delete
+            },
+        });
+        console.log("xmlPayload: " , xmlPayload);
+        // Emit the XML payload to the backend
+        socket.emit("deleteTodo", xmlPayload);
     };
 
-    const handleAddTodo = (e) => {
+    const handleAddTodo = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const todoPayload: TodoItemPayload = {
-            text: todo, // Use the `todo` state as the `text`
-            timestamp: new Date().toISOString(), // Use ISO 8601 format for clarity
+        // Create the XML payload
+        const builder = new Builder();
+        const todoPayload = {
+            todo: {
+                text: todoInput, // Use the `todo` state as the `text`
+                timestamp: new Date().toISOString(), // Use ISO 8601 format for clarity
+            },
         };
+        const xmlPayload:string = builder.buildObject(todoPayload); // Convert to XML
 
-        socket.emit("addTodo", todoPayload);
+        // Emit the XML payload over the socket
+        socket.emit("addTodo", xmlPayload);
 
-        setTodo("");
+        setTodoInput(""); // Reset the input field
     };
+    
+    // const handleAddTodo = (e) => {
+    //     e.preventDefault();
+    //
+    //     const todoPayload: TodoItemPayload = {
+    //         text: todoInput, // Use the `todo` state as the `text`
+    //         timestamp: new Date().toISOString(), // Use ISO 8601 format for clarity
+    //     };
+    //
+    //     socket.emit("addTodo", todoPayload);
+    //
+    //     setTodoInputInput("");
+    // };
 
     // Emit "registerUser" when the component mounts
     useEffect(() => {
@@ -51,24 +85,59 @@ function Main({ socket }) {
 
     }, [socket, navigate]);
 
-    // Fetch todos and set up socket listener for "todos" event
     useEffect(() => {
-        const fetchTodos = async () => {
-            try {
-                const response = await fetch("http://localhost:4000/api");
-                const data: TodoItem[] = await response.json(); // Expect the response to be an array of `TodoItem`
-                setTodoList(data);
-            } catch (error) {
-                console.error("Error fetching todos:", error);
-            }
-        };
+        // const fetchTodos = async () => {
+        //     try {
+                // const response = await fetch("http://localhost:4000/api", {
+                //     headers: {
+                //         Accept: "application/xml", // Request XML from the backend
+                //     },
+                // });
+                // console.log('response', response);
+                // console.log('response.body', response.body);
+                //
+                // const xmlData = await response.text(); // Get the XML as a string
+                // console.log('xmlData', xmlData);
+                // const parsedData = await parseStringPromise(xmlData, {
+                //     explicitArray: false, // Prevent wrapping single items in arrays
+                // });
+                // console.log('parsedData', parsedData);
 
-        fetchTodos();
+            //     if (parsedData.todos && parsedData.todos.todo) {
+            //         const todos = Array.isArray(parsedData.todos.todo)
+            //             ? parsedData.todos.todo
+            //             : [parsedData.todos.todo]; // Normalize to an array
+            //         setTodoList(todos); // Set the todo list state
+            //     } else {
+            //         console.error("Invalid XML structure");
+            //     }
+            // } catch (error) {
+            //     console.error("Error fetching todos:", error);
+            // }
+        // };
+
+        // fetchTodos();
 
         if (socket) {
-            socket.on("todos", (data: TodoItem[]) => {
-                setTodoList(data);
-                console.log("Todos received:", data);
+            socket.on("todos", async (xmlData: string) => {
+                try {
+                    console.log('xmlData', xmlData);
+                    // Parse the XML received via WebSocket
+                    const parsedData = await parseStringPromise(xmlData, {
+                        explicitArray: false,
+                    });
+                    console.log('parsedData', parsedData);
+                    if (parsedData.todos && parsedData.todos.todo) {
+                        const todos = Array.isArray(parsedData.todos.todo)
+                            ? parsedData.todos.todo
+                            : [parsedData.todos.todo]; // Normalize to an array
+                        setTodoList(todos); // Update the state with the parsed todos
+                    } else {
+                        console.error("Invalid XML structure");
+                    }
+                } catch (error) {
+                    console.error("Error parsing XML from WebSocket:", error);
+                }
             });
 
             // Cleanup the listener
@@ -77,14 +146,40 @@ function Main({ socket }) {
             };
         }
     }, [socket]);
+    // Fetch todos and set up socket listener for "todos" event
+    // useEffect(() => {
+    //     const fetchTodos = async () => {
+    //         try {
+    //             const response = await fetch("http://localhost:4000/api");
+    //             const data: TodoItem[] = await response.json(); // Expect the response to be an array of `TodoItem`
+    //             setTodoList(data);
+    //         } catch (error) {
+    //             console.error("Error fetching todos:", error);
+    //         }
+    //     };
+    //
+    //     fetchTodos();
+    //
+    //     if (socket) {
+    //         socket.on("todos", (data: TodoItem[]) => {
+    //             setTodoList(data);
+    //             console.log("Todos received:", data);
+    //         });
+    //
+    //         // Cleanup the listener
+    //         return () => {
+    //             socket.off("todos");
+    //         };
+    //     }
+    // }, [socket]);
 
     return (
         <div>
             <Nav />
             <form className="form" onSubmit={handleAddTodo}>
                 <input
-                    value={todo}
-                    onChange={(e) => setTodo(e.target.value)}
+                    value={todoInput}
+                    onChange={(e) => setTodoInput(e.target.value)}
                     className="input"
                     required
                 />
