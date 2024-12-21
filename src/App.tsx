@@ -1,20 +1,26 @@
-import {io} from "socket.io-client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import Main from "./components/Main";
-import Home from "./components/Home";
-
-const socket = io("http://localhost:4000");
-
-// const socket = socketIO.connect("http://localhost:4000");
+import Login from "./components/Login.tsx";
 
 import './App.css';
+import {useState} from "react";
 
 const App = () => {
+    const [token, setToken] = useState<string | null>(null);
+
+    const handleLoginSuccess = (jwt: string) => {
+        localStorage.setItem("token", jwt); // Store the token
+        setToken(jwt);
+    };
+
     return (
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/app' element={<Main socket={socket} />} />
+                <Route
+                    path="/"
+                    element={!token ? <Login onLoginSuccess={handleLoginSuccess} /> : <Navigate to="/app" />}
+                />
+                <Route path="/app" element={token ? <Main token={token} /> : <Navigate to="/" />} />
             </Routes>
         </BrowserRouter>
     );
