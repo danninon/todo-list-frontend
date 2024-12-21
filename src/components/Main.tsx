@@ -86,51 +86,24 @@ function Main({ socket }) {
     }, [socket, navigate]);
 
     useEffect(() => {
-        // const fetchTodos = async () => {
-        //     try {
-                // const response = await fetch("http://localhost:4000/api", {
-                //     headers: {
-                //         Accept: "application/xml", // Request XML from the backend
-                //     },
-                // });
-                // console.log('response', response);
-                // console.log('response.body', response.body);
-                //
-                // const xmlData = await response.text(); // Get the XML as a string
-                // console.log('xmlData', xmlData);
-                // const parsedData = await parseStringPromise(xmlData, {
-                //     explicitArray: false, // Prevent wrapping single items in arrays
-                // });
-                // console.log('parsedData', parsedData);
-
-            //     if (parsedData.todos && parsedData.todos.todo) {
-            //         const todos = Array.isArray(parsedData.todos.todo)
-            //             ? parsedData.todos.todo
-            //             : [parsedData.todos.todo]; // Normalize to an array
-            //         setTodoList(todos); // Set the todo list state
-            //     } else {
-            //         console.error("Invalid XML structure");
-            //     }
-            // } catch (error) {
-            //     console.error("Error fetching todos:", error);
-            // }
-        // };
-
-        // fetchTodos();
-
         if (socket) {
+            // Listen for the `todos` event to handle both initial loading and real-time updates
             socket.on("todos", async (xmlData: string) => {
                 try {
-                    console.log('xmlData', xmlData);
-                    // Parse the XML received via WebSocket
+                    console.log("Received XML data:", xmlData);
+
+                    // Parse the XML data received via WebSocket
                     const parsedData = await parseStringPromise(xmlData, {
-                        explicitArray: false,
+                        explicitArray: false, // Prevent wrapping single items in arrays
                     });
-                    console.log('parsedData', parsedData);
+
+                    console.log("Parsed Data:", parsedData);
+
                     if (parsedData.todos && parsedData.todos.todo) {
+                        // Normalize todos into an array
                         const todos = Array.isArray(parsedData.todos.todo)
                             ? parsedData.todos.todo
-                            : [parsedData.todos.todo]; // Normalize to an array
+                            : [parsedData.todos.todo];
                         setTodoList(todos); // Update the state with the parsed todos
                     } else {
                         console.error("Invalid XML structure");
@@ -140,12 +113,76 @@ function Main({ socket }) {
                 }
             });
 
-            // Cleanup the listener
+            // Request the initial todo list explicitly upon connecting
+            socket.emit("getTodos");
+
+            // Cleanup the listener on component unmount or when socket changes
             return () => {
                 socket.off("todos");
             };
         }
     }, [socket]);
+    // useEffect(() => {
+    //     // const fetchTodos = async () => {
+    //     //     try {
+    //             // const response = await fetch("http://localhost:4000/api", {
+    //             //     headers: {
+    //             //         Accept: "application/xml", // Request XML from the backend
+    //             //     },
+    //             // });
+    //             // console.log('response', response);
+    //             // console.log('response.body', response.body);
+    //             //
+    //             // const xmlData = await response.text(); // Get the XML as a string
+    //             // console.log('xmlData', xmlData);
+    //             // const parsedData = await parseStringPromise(xmlData, {
+    //             //     explicitArray: false, // Prevent wrapping single items in arrays
+    //             // });
+    //             // console.log('parsedData', parsedData);
+    //
+    //         //     if (parsedData.todos && parsedData.todos.todo) {
+    //         //         const todos = Array.isArray(parsedData.todos.todo)
+    //         //             ? parsedData.todos.todo
+    //         //             : [parsedData.todos.todo]; // Normalize to an array
+    //         //         setTodoList(todos); // Set the todo list state
+    //         //     } else {
+    //         //         console.error("Invalid XML structure");
+    //         //     }
+    //         // } catch (error) {
+    //         //     console.error("Error fetching todos:", error);
+    //         // }
+    //     // };
+    //
+    //     // fetchTodos();
+    //
+    //     if (socket) {
+    //         socket.on("todos", async (xmlData: string) => {
+    //             try {
+    //                 console.log('xmlData', xmlData);
+    //                 // Parse the XML received via WebSocket
+    //                 const parsedData = await parseStringPromise(xmlData, {
+    //                     explicitArray: false,
+    //                 });
+    //                 console.log('parsedData', parsedData);
+    //                 if (parsedData.todos && parsedData.todos.todo) {
+    //                     const todos = Array.isArray(parsedData.todos.todo)
+    //                         ? parsedData.todos.todo
+    //                         : [parsedData.todos.todo]; // Normalize to an array
+    //                     setTodoList(todos); // Update the state with the parsed todos
+    //                 } else {
+    //                     console.error("Invalid XML structure");
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Error parsing XML from WebSocket:", error);
+    //             }
+    //         });
+    //
+    //         // Cleanup the listener
+    //         return () => {
+    //             socket.off("todos");
+    //         };
+    //     }
+    // }, [socket]);
     // Fetch todos and set up socket listener for "todos" event
     // useEffect(() => {
     //     const fetchTodos = async () => {
