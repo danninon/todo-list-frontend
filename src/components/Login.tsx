@@ -7,6 +7,7 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
     const [error, setError] = useState(""); // To store any error messages
     // const navigate = useNavigate();
 
+    // @ts-ignore
     const handleLogin = async (e) => {
         e.preventDefault();
 
@@ -21,10 +22,6 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
             if (response.ok) {
                 // Save the token and username to local storage
                 onLoginSuccess(data.token); // Pass the token back to the parent
-                // localStorage.setItem("token", data.token);
-                // localStorage.setItem("_username", username);
-                // Navigate to the app
-                // navigate("/app");
             } else {
                 setError(data.error || "Login failed. Please try again.");
             }
@@ -50,6 +47,7 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
                     type="password"
                     placeholder="Password"
                     value={password}
+                    className="input"
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />

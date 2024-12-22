@@ -13,6 +13,7 @@ function Main({token}: { token: string }) {
 
     const isTokenExpired = (token: string): boolean => {
         const decoded: { exp: number } = jwtDecode(token);
+        console.log("decoded: ", decoded);
         const currentTime = Math.floor(Date.now() / 1000);
         return decoded.exp < currentTime;
     };
@@ -116,7 +117,7 @@ function Main({token}: { token: string }) {
 
             socket.on("todos", async (xmlData: string) => {
                 try {
-                    console.log("Received XML data:", xmlData);
+                    console.log("Received XML db:", xmlData);
 
                     console.log(xmlData);
                     if (xmlData === emptyTodosList) {
