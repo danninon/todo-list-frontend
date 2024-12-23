@@ -146,3 +146,27 @@
 .home > h2 {
     margin-bottom: 15px;
 }
+.status-indicator {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.status-button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: default;
+    font-weight: bold;
+    color: white;
+}
+
+.status-button.online {
+    background-color: #4caf50; /* Green */
+}
+
+.status-button.offline {
+    background-color: #f44336; /* Red */
+}

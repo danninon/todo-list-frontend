@@ -1,28 +1,29 @@
-import {FormEvent, useEffect, useState} from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Nav from "./Nav";
-import {TodoItem} from "../interfaces/TodoItem";
-import {Builder, parseStringPromise} from "xml2js";
-import {io, Socket} from "socket.io-client";
-import {jwtDecode} from "jwt-decode";
+import { TodoItem } from "../interfaces/TodoItem";
+import { Builder, parseStringPromise } from "xml2js";
+import { io, Socket } from "socket.io-client";
+import { jwtDecode } from "jwt-decode";
 import config from "../config/default";
 
-function Main({token}: { token: string }) {
+function Main({ token }: { token: string }) {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [todoInput, setTodoInput] = useState("");
     const [todoList, setTodoList] = useState<TodoItem[]>([]);
-    const emptyTodosList = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + '<todos/>';
+    const [localTodos, setLocalTodos] = useState<TodoItem[]>([]); // Local todos for offline mode
+    const [isOffline, setIsOffline] = useState(!navigator.onLine); // Track online/offline status
+    const emptyTodosList =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' + "<todos/>";
 
+    // Check if token is expired
     const isTokenExpired = (token: string): boolean => {
         const decoded: { exp: number } = jwtDecode(token);
-        console.log("decoded: ", decoded);
         const currentTime = Math.floor(Date.now() / 1000);
         return decoded.exp < currentTime;
     };
 
-
     const handleDelete = (todoId: string) => {
         if (!socket) return;
-        console.log(`Todo item with id ${todoId} will be deleted.`);
 
         if (isTokenExpired(token)) {
             alert("Session expired. Please log in again.");
@@ -30,11 +31,12 @@ function Main({token}: { token: string }) {
             window.location.href = "/";
             return;
         }
+
         const builder = new Builder();
         const xmlPayload = builder.buildObject({
-            todo: {id: todoId},
+            todo: { id: todoId },
         });
-        console.log("xmlPayload:", xmlPayload);
+
         try {
             socket.emit("deleteTodo", xmlPayload, (response: { error?: string }) => {
                 if (response?.error) {
@@ -49,36 +51,60 @@ function Main({token}: { token: string }) {
 
     const handleAddTodo = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!socket) return;
 
-        if (isTokenExpired(token)) {
-            alert("Session expired. Please log in again.");
-            localStorage.removeItem("token");
-            window.location.href = "/";
-            return;
-        }
-
-        const builder = new Builder();
-        const todoPayload = {
-            todo: {
-                text: todoInput,
-                timestamp: new Date().toISOString(),
-            },
+        const newTodo: TodoItem = {
+            id: `${Date.now()}`, // Temporary unique ID
+            text: todoInput,
+            timeStamp: new Date().toISOString(),
+            userId: "local-user", // Replace with actual user ID
         };
-        const xmlPayload: string = builder.buildObject(todoPayload);
-        try {
-            socket.emit("addTodo", xmlPayload, (response: { error?: string }) => {
-                if (response?.error) {
-                    alert(`Failed to add todo: ${response.error}`);
-                }
+
+        if (!socket || isOffline) {
+            // Offline mode or server is unreachable
+            setLocalTodos((prev) => [...prev, newTodo]); // Add to offline list
+            alert("Added to local todos. Will sync when online.");
+        } else {
+            // Online: Send directly to the server
+            const builder = new Builder();
+            const xmlPayload = builder.buildObject({
+                todo: { text: newTodo.text, timestamp: newTodo.timeStamp },
             });
-            setTodoInput(""); // Reset the input field only if the request is successful
-        } catch (err) {
-            console.error("Error sending addTodo request:", err);
-            alert("An unexpected error occurred while adding the todo. Please try again.");
+
+            try {
+                socket.emit("addTodo", xmlPayload, (response: { error?: string }) => {
+                    if (response?.error) {
+                        // Add back to local todos if server fails
+                        setLocalTodos((prev) => [...prev, newTodo]);
+                        alert(`Failed to add todo: ${response.error}`);
+                    }
+                });
+            } catch (err) {
+                console.error("Error sending addTodo request:", err);
+                // Add back to local todos if the emit fails
+                setLocalTodos((prev) => [...prev, newTodo]);
+                alert("Failed to connect to the server. Added to local todos.");
+            }
         }
+
+        setTodoInput(""); // Reset input field
     };
 
+
+    // Initialize online/offline listeners
+    useEffect(() => {
+        const handleOnline = () => setIsOffline(false);
+        const handleOffline = () => setIsOffline(true);
+
+        window.addEventListener("online", handleOnline);
+        window.addEventListener("offline", handleOffline);
+
+        return () => {
+            window.removeEventListener("online", handleOnline);
+            window.removeEventListener("offline", handleOffline);
+        };
+    }, []);
+
+    // Initialize socket connection
     useEffect(() => {
         if (isTokenExpired(token)) {
             alert("Session expired. Please log in again.");
@@ -86,42 +112,71 @@ function Main({token}: { token: string }) {
             window.location.href = "/";
             return;
         }
+
         const newSocket = io(config.socketBaseUrl, {
             auth: { token },
         });
-        setSocket(newSocket); // Set the socket instance
+        setSocket(newSocket);
+
+        newSocket.on("connect", () => {
+            console.log("Connected to the server");
+            setIsOffline(false); // Mark as online when connected
+        });
+
+        newSocket.on("disconnect", () => {
+            console.log("Disconnected from the server");
+            setIsOffline(true); // Mark as offline when disconnected
+        });
 
         newSocket.on("error", (errorResponse: string) => {
             console.error("Error received from server:", errorResponse);
-            alert(`Server error: ${errorResponse}`); // Display the error to the user
+            alert(`Server error: ${errorResponse}`);
         });
 
         newSocket.on("connect_error", (err) => {
             console.error("Socket connection error:", err.message);
-            alert("Failed to connect to the server. Please check your network or try again later."); // User-friendly feedback
+
+            // Switch to offline mode on connection error
+            // if (!isOffline) {
+            //     setIsOffline(true);
+            //     alert("Server connection lost. Switching to offline mode.");
+            // }
         });
 
         return () => {
-            newSocket.disconnect(); // Ensure socket is disconnected on component unmount
+            newSocket.disconnect();
         };
     }, [token]);
 
+    // Sync local todos when online
+    useEffect(() => {
+        if (!isOffline && localTodos.length > 0) {
+            localTodos.forEach((todo) => {
+                const builder = new Builder();
+                const xmlPayload = builder.buildObject({
+                    todo: { text: todo.text, timestamp: todo.timeStamp },
+                });
+
+                socket?.emit("addTodo", xmlPayload, (response: { error?: string }) => {
+                    if (response?.error) {
+                        console.error(`Failed to sync todo: ${response.error}`);
+                    } else {
+                        console.log(`Todo synced successfully: ${todo.id}`);
+                    }
+                });
+            });
+
+            setLocalTodos([]); // Clear local todos after syncing
+        }
+    }, [isOffline, localTodos, socket]);
+
+    // Fetch todos from server
     useEffect(() => {
         if (socket) {
-            if (isTokenExpired(token)) {
-                alert("Session expired. Please log in again.");
-                localStorage.removeItem("token");
-                window.location.href = "/";
-                return;
-            }
-
             socket.on("todos", async (xmlData: string) => {
                 try {
-                    console.log("Received XML db:", xmlData);
-
-                    console.log(xmlData);
                     if (xmlData === emptyTodosList) {
-                        setTodoList([]); // Set an empty todo list
+                        setTodoList([]);
                         return;
                     }
 
@@ -135,24 +190,17 @@ function Main({token}: { token: string }) {
                             : [parsedData.todos.todo];
                         setTodoList(todos);
                     } else {
-                        console.error("Invalid XML structure");
                         alert("Failed to load todos: Invalid response from server.");
                     }
                 } catch (error) {
-                    console.error("Error parsing XML from WebSocket:", error);
                     alert("Failed to load todos: Could not parse the server response.");
                 }
             });
 
-            socket.emit("getTodos", (response: { error?: string }) => {
-                if (response?.error) {
-                    console.error("Error fetching todos:", response.error);
-                    alert(`Error fetching todos: ${response.error}`);
-                }
-            });
+            socket.emit("getTodos");
 
             return () => {
-                socket.off("todos"); // Cleanup event listener
+                socket.off("todos");
             };
         }
     }, [socket]);
@@ -160,6 +208,11 @@ function Main({token}: { token: string }) {
     return (
         <div>
             <Nav/>
+            <div className="status-indicator">
+                <button className={`status-button ${isOffline ? "offline" : "online"}`}>
+                    {isOffline ? "Offline" : "Online"}
+                </button>
+            </div>
             <form className="form" onSubmit={handleAddTodo}>
                 <input
                     value={todoInput}
@@ -170,7 +223,7 @@ function Main({token}: { token: string }) {
                 <button className="form__cta">ADD TODO</button>
             </form>
             <div className="todo__container">
-                {todoList.map((item) => (
+                {[...todoList, ...localTodos].map((item) => (
                     <div className="todo__item" key={item.id}>
                         <p>{item.text}</p>
                         <small className="todo__time">
@@ -190,6 +243,8 @@ function Main({token}: { token: string }) {
                     </div>
                 ))}
             </div>
+
+
         </div>
     );
 }
