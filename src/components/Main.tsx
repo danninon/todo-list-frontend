@@ -4,6 +4,7 @@ import {TodoItem} from "../interfaces/TodoItem";
 import {Builder, parseStringPromise} from "xml2js";
 import {io, Socket} from "socket.io-client";
 import {jwtDecode} from "jwt-decode";
+import config from "../config/default";
 
 function Main({token}: { token: string }) {
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -86,7 +87,8 @@ function Main({token}: { token: string }) {
             return;
         }
         //TODO: replace address with config
-        const newSocket = io("http://ec2-54-144-64-88.compute-1.amazonaws.com:4000", {
+        //"http://ec2-54-144-64-88.compute-1.amazonaws.com:4000"
+        const newSocket = io(config.socketBaseUrl, {
             auth: { token },
         });
         setSocket(newSocket); // Set the socket instance

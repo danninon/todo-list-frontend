@@ -1,5 +1,6 @@
 // import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import config from "../config/default";
 
 const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) => {
     const [username, setUsername] = useState("");
@@ -13,7 +14,8 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
 
         try {
             //TODO: replace address with config
-            const response = await fetch(`http://ec2-54-144-64-88.compute-1.amazonaws.com:4000/auth/login`, {
+            //`http://ec2-54-144-64-88.compute-1.amazonaws.com:4000/auth/login`
+            const response = await fetch(`${config.apiBaseUrl}/auth/login` , {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
