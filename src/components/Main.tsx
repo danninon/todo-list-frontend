@@ -85,9 +85,9 @@ function Main({token}: { token: string }) {
             window.location.href = "/";
             return;
         }
-
-        const newSocket = io("http://localhost:4000", {
-            auth: {token},
+        //TODO: replace address with config
+        const newSocket = io("http://ec2-54-144-64-88.compute-1.amazonaws.com:4000", {
+            auth: { token },
         });
         setSocket(newSocket); // Set the socket instance
 

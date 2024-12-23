@@ -12,7 +12,8 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:4000/auth/login", {
+            //TODO: replace address with config
+            const response = await fetch(`http://ec2-54-144-64-88.compute-1.amazonaws.com:4000/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),

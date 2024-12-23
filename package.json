@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/socket.io": "^3.0.1",
+    "dotenv": "^16.4.7",
     "events": "^3.3.0",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
