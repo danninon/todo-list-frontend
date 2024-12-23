@@ -86,8 +86,6 @@ function Main({token}: { token: string }) {
             window.location.href = "/";
             return;
         }
-        //TODO: replace address with config
-        //"http://ec2-54-144-64-88.compute-1.amazonaws.com:4000"
         const newSocket = io(config.socketBaseUrl, {
             auth: { token },
         });

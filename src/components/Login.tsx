@@ -1,4 +1,3 @@
-// import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import config from "../config/default";
 
@@ -6,16 +5,16 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(""); // To store any error messages
-    // const navigate = useNavigate();
+    const [signUpError, setSignUpError] = useState(""); // Error messages for sign-up
+    const [signUpUsername, setSignUpUsername] = useState("");
+    const [signUpPassword, setSignUpPassword] = useState("");
 
-    // @ts-ignore
-    const handleLogin = async (e) => {
+    // Handle login submission
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
-            //TODO: replace address with config
-            //`http://ec2-54-144-64-88.compute-1.amazonaws.com:4000/auth/login`
-            const response = await fetch(`${config.apiBaseUrl}/auth/login` , {
+            const response = await fetch(`${config.apiBaseUrl}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
@@ -23,7 +22,6 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
 
             const data = await response.json();
             if (response.ok) {
-                // Save the token and username to local storage
                 onLoginSuccess(data.token); // Pass the token back to the parent
             } else {
                 setError(data.error || "Login failed. Please try again.");
@@ -33,8 +31,34 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
         }
     };
 
+    // Handle sign-up submission
+    const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(`${config.apiBaseUrl}/auth/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: signUpUsername, password: signUpPassword }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setSignUpUsername("");
+                setSignUpPassword("");
+                setSignUpError(""); // Clear any previous error
+            } else {
+                console.log(data);
+                setSignUpError(`${data} Sign-up failed. Please try again.`);
+            }
+        } catch (err) {
+            setSignUpError("Unable to connect to the server. Please try again later.");
+        }
+    };
+
     return (
         <div className="home">
+            {/* Login Section */}
             <h2>Sign in to your todo-list</h2>
             <form onSubmit={handleLogin} className="home__form">
                 <label htmlFor="username">Your Username</label>
@@ -56,6 +80,30 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) 
                 />
                 <button type="submit">Login</button>
                 {error && <p className="error">{error}</p>}
+            </form>
+
+            {/* Sign-Up Section */}
+            <h2>Create a new account</h2>
+            <form onSubmit={handleSignUp} className="home__form">
+                <label htmlFor="signUpUsername">Username</label>
+                <input
+                    value={signUpUsername}
+                    placeholder="Username"
+                    onChange={(e) => setSignUpUsername(e.target.value)}
+                    className="input"
+                    required
+                />
+                <label htmlFor="signUpPassword">Password</label>
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={signUpPassword}
+                    className="input"
+                    onChange={(e) => setSignUpPassword(e.target.value)}
+                    required
+                />
+                <button type="submit">Sign Up</button>
+                {signUpError && <p className="error">{signUpError}</p>}
             </form>
         </div>
     );
