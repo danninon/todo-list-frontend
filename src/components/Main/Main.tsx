@@ -85,6 +85,7 @@ function Main({ token }: { token: string }) {
 
     // Sync local changes when going online or server reconnects
     useEffect(() => {
+
         if (!isOffline && isServerConnected && socket) {
             const builder = new Builder();
 
@@ -118,14 +119,13 @@ function Main({ token }: { token: string }) {
                 });
             });
 
-            // Sync changes with the server and update UI
-            setTodoList((prev) =>
-                [...prev, ...localTodos].filter(
-                    (todo) => !localDeletions.find((deleted) => deleted.id === todo.id)
-                )
-            );
-            setLocalTodos([]); // Clear local additions after syncing
-            setLocalDeletions([]); // Clear local deletions after syncing
+            if(localTodos.length){
+                setLocalTodos([]); // Clear local additions after syncing
+            }
+            if (localDeletions.length){
+                setLocalDeletions([]); // Clear local deletions after syncing
+            }
+
         }
     }, [isOffline, isServerConnected, localTodos, localDeletions, socket]);
 
