@@ -1,6 +1,4 @@
-/* Login.css */
 
-/* Overall page styles */
 .login-page {
     display: flex;
     flex-direction: column;
@@ -12,7 +10,6 @@
     gap: var(--spacing-large);
 }
 
-/* Section styles */
 .login-section, .signup-section {
     width: 100%;
     max-width: 400px;
@@ -29,7 +26,6 @@
     color: var(--primary-color);
 }
 
-/* Responsiveness for mobile */
 @media (max-width: 768px) {
     .login-page {
         padding: var(--spacing-medium);

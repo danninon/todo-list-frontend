@@ -22,7 +22,7 @@ const App = () => {
     }, []);
 
     const handleLoginSuccess = (jwt: string) => {
-        localStorage.setItem("token", jwt); // Store the token
+        localStorage.setItem("token", jwt);
         setToken(jwt);
     };
 

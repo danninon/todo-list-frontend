@@ -20,9 +20,9 @@ const SignUpForm = () => {
             if (response.ok) {
                 setUsername("");
                 setPassword("");
-                setError(""); // Clear any previous error
+                setError("");
             } else {
-                setError(data.error || "Sign-up failed. Please try again.");
+                setError(data);
             }
         } catch {
             setError("Unable to connect to the server. Please try again later.");

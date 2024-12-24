@@ -1,10 +1,10 @@
 import './Nav.css';
 
 const Nav = () => {
-    // const navigate = useNavigate();
+
 
     const handleLogout = () => {
-        localStorage.removeItem("token"); // Clear the token from localStorage
+        localStorage.removeItem("token");
         window.location.href = "/";
     };
 

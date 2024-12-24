@@ -1,20 +1,16 @@
-/* SignUpForm.css */
 
-/* Form container styles */
 .signup-form {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-medium);
 }
 
-/* Label styles */
 .signup-form__label {
     font-size: 1rem;
     color: var(--text-color);
     margin-bottom: var(--spacing-small);
 }
 
-/* Input field styles */
 .signup-form__input {
     padding: var(--spacing-small);
     font-size: 1rem;
@@ -29,7 +25,6 @@
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
-/* Button styles */
 .signup-form__button {
     background-color: var(--primary-color);
     color: var(--secondary-color);
@@ -45,14 +40,12 @@
     background-color: darken(var(--primary-color), 10%);
 }
 
-/* Error message styles */
 .signup-form__error {
     color: var(--error-color);
     font-size: 0.9rem;
     margin-top: var(--spacing-small);
 }
 
-/* Mobile-specific adjustments */
 @media (max-width: 768px) {
     .signup-form {
         gap: var(--spacing-small);

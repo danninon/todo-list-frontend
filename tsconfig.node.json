@@ -1,33 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES2022",              // Targeting modern JavaScript (ES2022)
-    "lib": ["ES2023", "DOM"],        // Include DOM library for browser-based projects
-    "module": "ESNext",              // Use ESNext module system for import.meta
-    "skipLibCheck": true,            // Skip type checking of library files for faster compilation
-    /* Bundler mode */
-    "moduleResolution": "bundler",   // Use Vite's bundler mode for resolving modules
-    "allowImportingTsExtensions": true, // Allow importing TypeScript files with extensions
-    "isolatedModules": true,         // Ensure each file is treated as a module
-    "moduleDetection": "force",      // Force strict detection of modules
-    "noEmit": true,                  // Disable emitting output files
-    /* Linting */
-    "strict": true,                  // Enable all strict type-checking options
-    "noUnusedLocals": true,          // Disallow unused local variables
-    "noUnusedParameters": true,      // Disallow unused function parameters
-    "noFallthroughCasesInSwitch": true, // Prevent fallthrough in switch statements
-    /* Vite-specific */
-    "types": ["vite/client"],        // Add Vite types to support import.meta.env
-    "baseUrl": ".",                  // Set base URL for module resolution
-    "paths": {                       // Optional: Define custom path aliases
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+        "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+        "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+        "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
       "@/*": ["src/*"]
     }
   },
   "include": [
-    "vite.config.ts",                // Include Vite configuration file
-    "src/**/*.ts",                   // Include all TypeScript files in the src directory
-    "src/**/*.d.ts"                  // Include declaration files
+    "vite.config.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": [
-    "node_modules"                   // Exclude node_modules from type checking
+    "node_modules"
   ]
 }

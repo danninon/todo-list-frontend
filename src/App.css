@@ -1,6 +1,4 @@
-/* App.css */
 
-/* 1. CSS Variables for Colors, Spacing, and Typography */
 :root {
     --primary-color: teal;
     --secondary-color: #ffffff;
@@ -15,7 +13,6 @@
     --spacing-large: 2rem;
 }
 
-/* 2. Global Reset */
 * {
     margin: 0;
     padding: 0;
@@ -40,7 +37,6 @@ button {
     border: none;
 }
 
-/* 3. Typography */
 h1, h2, h3, h4, h5, h6 {
     margin: var(--spacing-small) 0;
     font-weight: bold;
@@ -57,7 +53,6 @@ p {
     font-size: 0.9rem;
 }
 
-/* 4. Containers and Layouts */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -78,7 +73,6 @@ p {
     align-items: center;
 }
 
-/* 5. Buttons */
 .button {
     background-color: var(--primary-color);
     color: var(--secondary-color);
@@ -87,6 +81,3 @@ p {
     transition: background-color 0.3s ease;
 }
 
-/*.button:hover {*/
-/*    background-color: darken(var(--primary-color), 10%);*/
-/*}*/

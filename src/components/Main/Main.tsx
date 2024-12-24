@@ -83,13 +83,13 @@ function Main({ token }: { token: string }) {
         });
     };
 
-    // Sync local changes when going online or server reconnects
+
     useEffect(() => {
 
         if (!isOffline && isServerConnected && socket) {
             const builder = new Builder();
 
-            // Add local todos to the server
+
             localTodos.forEach((todo) => {
                 const xmlPayload = builder.buildObject({
                     todo: { text: todo.text, timestamp: todo.timeStamp },
@@ -104,7 +104,7 @@ function Main({ token }: { token: string }) {
                 });
             });
 
-            // Delete local deletions from the server
+
             localDeletions.forEach((todo) => {
                 const xmlPayload = builder.buildObject({
                     todo: { id: todo.id },
@@ -120,10 +120,10 @@ function Main({ token }: { token: string }) {
             });
 
             if(localTodos.length){
-                setLocalTodos([]); // Clear local additions after syncing
+                setLocalTodos([]);
             }
             if (localDeletions.length){
-                setLocalDeletions([]); // Clear local deletions after syncing
+                setLocalDeletions([]);
             }
 
         }

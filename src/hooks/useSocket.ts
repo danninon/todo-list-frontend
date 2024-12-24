@@ -20,12 +20,12 @@ export function useSocket(
         const newSocket = io(config.socketBaseUrl, { auth: { token } });
         setSocket(newSocket);
 
-        // Handle server connection status
+
         newSocket.on("connect", () => {
             console.log("Connected to server.");
             setIsServerConnected(true);
 
-            // Fetch todos when connected
+
             newSocket.emit("getTodos");
         });
 
@@ -39,7 +39,7 @@ export function useSocket(
             setIsServerConnected(false);
         });
 
-        // Handle receiving todos
+
         newSocket.on("todos", async (xmlData: string) => {
             try {
                 if (xmlData === emptyTodosList) {
