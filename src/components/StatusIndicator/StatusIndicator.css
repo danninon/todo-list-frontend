@@ -17,12 +17,12 @@
 
 /* Online status styles */
 .status-button.online {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+    background-color: #28a745; /* Green background */
+    color: #ffffff; /* White text for contrast */
 }
 
 .status-button.online:hover {
-    background-color: darken(var(--primary-color), 10%);
+    background-color: #218838; /* Slightly darker green for hover */
 }
 
 /* Offline status styles */
