@@ -3,13 +3,13 @@ import Main from "./components/Main";
 import Login from "./components/Login.tsx";
 import './App.css';
 import { useEffect, useState } from "react";
-import {jwtDecode} from "jwt-decode";
+import {isTokenExpired} from "./utils/tokenUtils.ts";
 
 const App = () => {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const savedToken = localStorage.getItem("token");
+        const savedToken= localStorage.getItem("token");
         if (savedToken) {
             if (isTokenExpired(savedToken)) {
                 alert("Session expired. Please log in again.");
@@ -24,12 +24,6 @@ const App = () => {
     const handleLoginSuccess = (jwt: string) => {
         localStorage.setItem("token", jwt); // Store the token
         setToken(jwt);
-    };
-
-    const isTokenExpired = (token: string): boolean => {
-        const decoded: { exp: number } = jwtDecode(token);
-        const currentTime = Math.floor(Date.now() / 1000);
-        return decoded.exp < currentTime;
     };
 
     return (
