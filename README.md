@@ -43,16 +43,19 @@ The project implements a **Continuous Integration and Deployment (CI/CD)** mecha
 - AWS CLI configured for deployment to S3 if manual deployment is needed.
 
 ### Local Development
-1. Clone the repository:
+   1. Clone the repository:
+      
    ```bash
    git clone git clone https://github.com/danninon/todo-list-frontend
    ```
-2.Install dependencies:
+   2. Install dependencies:
+      
    ```bash
    cd client
    npm install
    ```
-3. Start the development client
+   3. Start the development client:
+      
    ```bash
    npm run dev
    ```
