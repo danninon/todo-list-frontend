@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import Nav from "./Nav";
-import StatusIndicator from "./StatusIndicator";
-import TodoForm from "./TodoForm";
-import TodoList from "./TodoList";
-import { useOnlineStatus } from "../hooks/useOnlineStatus";
-import { useSocket } from "../hooks/useSocket";
-import { isTokenExpired } from "../utils/tokenUtils";
+import Nav from "../Nav/Nav.tsx";
+import StatusIndicator from "../StatusIndicator/StatusIndicator.tsx";
+import TodoForm from "../TodoForm/TodoForm.tsx";
+import TodoList from "../TodoList/TodoList.tsx";
+import { useOnlineStatus } from "../../hooks/useOnlineStatus.ts";
+import { useSocket } from "../../hooks/useSocket.ts";
+import { isTokenExpired } from "../../utils/tokenUtils.ts";
 import { Builder } from "xml2js";
-import { TodoItem } from "../interfaces/TodoItem";
+import { TodoItem } from "../../interfaces/TodoItem.ts";
+import './Main.css';
 
 function Main({ token }: { token: string }) {
     const [todoInput, setTodoInput] = useState("");
@@ -129,7 +130,7 @@ function Main({ token }: { token: string }) {
     }, [isOffline, isServerConnected, localTodos, localDeletions, socket]);
 
     return (
-        <div>
+        <div className="main">
             <Nav />
             <StatusIndicator
                 isOffline={isOffline || !isServerConnected}

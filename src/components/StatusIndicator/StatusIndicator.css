@@ -1,0 +1,36 @@
+/* StatusIndicator.css */
+.status-indicator {
+    display: flex;
+    justify-content: flex-end;
+    margin: var(--spacing-medium) 0;
+}
+
+.status-button {
+    padding: var(--spacing-small) var(--spacing-medium);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Online status styles */
+.status-button.online {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.status-button.online:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+/* Offline status styles */
+.status-button.offline {
+    background-color: #ff5252;
+    color: var(--secondary-color);
+}
+
+.status-button.offline:hover {
+    background-color: #e53935;
+}

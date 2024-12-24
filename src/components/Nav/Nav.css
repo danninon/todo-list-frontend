@@ -1,0 +1,33 @@
+/* Nav.css */
+
+/* Style the navigation bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-medium);
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+/* Style the title */
+.navbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Style the logout button */
+.logoutBtn {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    padding: var(--spacing-small) var(--spacing-medium);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the logout button */
+.logoutBtn:hover {
+    background-color: #f5f5f5;
+}

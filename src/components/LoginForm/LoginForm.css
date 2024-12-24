@@ -1,0 +1,64 @@
+/* LoginForm.css */
+
+/* Form container styles */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+}
+
+/* Label styles */
+.login-form__label {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-small);
+}
+
+/* Input field styles */
+.login-form__input {
+    padding: var(--spacing-small);
+    font-size: 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-form__input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Button styles */
+.login-form__button {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: var(--spacing-small) var(--spacing-medium);
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-form__button:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+/* Error message styles */
+.login-form__error {
+    color: var(--error-color);
+    font-size: 0.9rem;
+    margin-top: var(--spacing-small);
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+    .login-form {
+        gap: var(--spacing-small);
+    }
+
+    .login-form__button {
+        width: 100%;
+    }
+}

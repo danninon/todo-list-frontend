@@ -1,3 +1,5 @@
+import './StatusIndicator.css';
+
 function StatusIndicator({ isOffline }: { isOffline: boolean }) {
     return (
         <div className="status-indicator">

@@ -1,0 +1,14 @@
+/* Main.css */
+
+.main {
+    padding: var(--spacing-large);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium); /* Spacing between child components */
+    background-color: var(--background-color);
+    min-height: 100vh; /* Ensure it covers the viewport */
+}
+
+.status-indicator {
+    align-self: flex-end; /* Align StatusIndicator to the right */
+}

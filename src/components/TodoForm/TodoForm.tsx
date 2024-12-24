@@ -1,5 +1,6 @@
 import { FormEvent } from "react";
-import { TodoItem } from "../interfaces/TodoItem";
+import { TodoItem } from "../../interfaces/TodoItem.ts";
+import './TodoForm.css';
 
 function TodoForm({
                       todoInput,
@@ -23,14 +24,14 @@ function TodoForm({
     };
 
     return (
-        <form className="form" onSubmit={handleSubmit}>
+        <form className="todo-form" onSubmit={handleSubmit}>
             <input
                 value={todoInput}
                 onChange={(e) => setTodoInput(e.target.value)}
-                className="input"
+                className="todo-form__input"
                 required
             />
-            <button className="form__cta">ADD TODO</button>
+            <button className="todo-form__button">ADD TODO</button>
         </form>
     );
 }

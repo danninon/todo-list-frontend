@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Main from "./components/Main";
-import Login from "./components/Login.tsx";
+import Main from "./components/Main/Main.tsx";
+import Login from "./components/Login/Login.tsx";
 import './App.css';
 import { useEffect, useState } from "react";
 import {isTokenExpired} from "./utils/tokenUtils.ts";

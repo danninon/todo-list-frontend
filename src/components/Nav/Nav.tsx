@@ -1,3 +1,5 @@
+import './Nav.css';
+
 const Nav = () => {
     // const navigate = useNavigate();
 
@@ -8,7 +10,7 @@ const Nav = () => {
 
     return (
         <nav className="navbar">
-            <h2>Todo List</h2>
+            <h2 className="navbar-title">Todo List</h2>
             <button onClick={handleLogout} className="logoutBtn">
                 Logout
             </button>

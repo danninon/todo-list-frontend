@@ -1,0 +1,43 @@
+/* TodoItem.css */
+.todo-item {
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-medium);
+    background-color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.todo-item__text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: var(--spacing-small);
+}
+
+.todo-item__time, .todo-item__user {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-small);
+}
+
+.todo-item__delete {
+    align-self: flex-start;
+    background-color: var(--error-color);
+    color: var(--secondary-color);
+    padding: var(--spacing-small) var(--spacing-medium);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.todo-item__delete:hover {
+    background-color: #e53935;
+}

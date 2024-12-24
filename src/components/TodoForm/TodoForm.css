@@ -1,0 +1,40 @@
+/* TodoForm.css */
+.todo-form {
+    display: flex;
+    gap: var(--spacing-small);
+    padding: var(--spacing-medium);
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+
+.todo-form__input {
+    flex: 1;
+    padding: var(--spacing-small);
+    font-size: 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.todo-form__input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.todo-form__button {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: var(--spacing-small) var(--spacing-medium);
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.todo-form__button:hover {
+    background-color: darken(var(--primary-color), 10%);
+}

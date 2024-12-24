@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
-import config from "../config/default";
+import config from "../../config/default.ts";
+import './LoginForm.css'
 
 const LoginForm = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void }) => {
     const [username, setUsername] = useState("");
@@ -27,26 +28,26 @@ const LoginForm = ({ onLoginSuccess }: { onLoginSuccess: (token: string) => void
     };
 
     return (
-        <form onSubmit={handleLogin} className="home__form">
-            <label htmlFor="username">Your Username</label>
+        <form onSubmit={handleLogin} className="login-form">
+            <label htmlFor="username" className="login-form__label">Your Username</label>
             <input
                 value={username}
                 placeholder="Username"
                 onChange={(e) => setUsername(e.target.value)}
-                className="input"
+                className="login-form__input"
                 required
             />
-            <label htmlFor="password">Your Password</label>
+            <label htmlFor="password" className="login-form__label">Your Password</label>
             <input
                 type="password"
                 placeholder="Password"
                 value={password}
-                className="input"
+                className="login-form__input"
                 onChange={(e) => setPassword(e.target.value)}
                 required
             />
-            <button type="submit">Login</button>
-            {error && <p className="error">{error}</p>}
+            <button type="submit" className="login-form__button">Login</button>
+            {error && <p className="login-form__error">{error}</p>}
         </form>
     );
 };

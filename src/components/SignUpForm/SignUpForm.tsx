@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
-import config from "../config/default";
+import config from "../../config/default.ts";
+import './SignUpForm.css';
 
 const SignUpForm = () => {
     const [username, setUsername] = useState("");
@@ -29,26 +30,26 @@ const SignUpForm = () => {
     };
 
     return (
-        <form onSubmit={handleSignUp} className="home__form">
-            <label htmlFor="signUpUsername">Username</label>
+        <form onSubmit={handleSignUp} className="signup-form">
+            <label htmlFor="signUpUsername" className="signup-form__label">Username</label>
             <input
                 value={username}
                 placeholder="Username"
                 onChange={(e) => setUsername(e.target.value)}
-                className="input"
+                className="signup-form__input"
                 required
             />
-            <label htmlFor="signUpPassword">Password</label>
+            <label htmlFor="signUpPassword" className="signup-form__label">Password</label>
             <input
                 type="password"
                 placeholder="Password"
                 value={password}
-                className="input"
+                className="signup-form__input"
                 onChange={(e) => setPassword(e.target.value)}
                 required
             />
-            <button type="submit">Sign Up</button>
-            {error && <p className="error">{error}</p>}
+            <button type="submit" className="signup-form__button">Sign Up</button>
+            {error && <p className="signup-form__error">{error}</p>}
         </form>
     );
 };
